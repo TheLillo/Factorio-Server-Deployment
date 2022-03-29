@@ -1,7 +1,7 @@
 ## Factorio Server Deployment
 
- This project simplifies the deployment of [Factorio](https://www.factorio.com/) headless server with a modern approach (IaC). \
-More information about the installation are provide in [Factorio official wiki](https://wiki.factorio.com/Multiplayer). \
+This project simplifies the deployment of [Factorio](https://www.factorio.com/) headless server with a modern approach (IaC). \
+More information about the installation are provide in [Factorio official wiki](https://wiki.factorio.com/Multiplayer).
 
 Up to now only [Hetzner Cloud](https://www.hetzner.com/cloud) is supported for deployment. I encourage all people to submit other cloud provider module for Terraform.
 
