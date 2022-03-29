@@ -1,0 +1,4 @@
+ansible:
+    factorio_save: test.zip
+terraform:
+    git_ssh_keys: "https://${github or gitlab}.com/${USER}.keys"

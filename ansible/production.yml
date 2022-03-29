@@ -1,0 +1,5 @@
+all:
+  hosts:
+    factorio:
+        ansible_ssh_user: root
+        ansible_host: REMOTE_VM_IP
