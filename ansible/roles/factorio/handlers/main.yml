@@ -1,0 +1,5 @@
+---
+ - name: start Factorio
+   service:
+     name: factorio
+     state: started

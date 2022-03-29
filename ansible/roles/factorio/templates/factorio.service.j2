@@ -1,0 +1,18 @@
+[Unit]
+Description=Factorio Headless Server
+Wants=network-online.target
+After=network.target network-online.target
+
+[Service]
+User=factorio
+Group=factorio
+WorkingDirectory=/opt/factorio
+Type=simple
+TimeoutStartSec=20
+ExecStart=/opt/factorio/bin/x64/factorio --start-server ./saves/{{ config.ansible.factorio_save }} --server-settings ./saves/server-settings.json
+TimeoutStopSec=20
+RestartSec=20
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,16 @@
+---
+ - name: Update all packages
+   apt:
+     update_cache: yes
+
+ - name: Permit SSH only with key
+   ansible.builtin.lineinfile:
+     path: '/etc/ssh/sshd_config'
+     search_string: 'PubkeyAuthentication'
+     line: 'PubkeyAuthentication yes'
+
+ - name: Permit SSH only with key
+   ansible.builtin.lineinfile:
+     path: '/etc/ssh/sshd_config'
+     search_string: 'PasswordAuthentication'
+     line: 'PasswordAuthentication no'

@@ -1,0 +1,80 @@
+---
+ - name: Install iptables-persistent
+   apt:
+     name: [ "iptables", "iptables-persistent" ]
+
+ - name: Allow loopback traffic
+   iptables:
+     chain: INPUT
+     ip_version: "{{ item }}"
+     in_interface: lo
+     action: append
+     jump: ACCEPT
+   loop:
+     - ipv4
+     - ipv6
+
+ - name: Allow input Port for SSH from outside
+   iptables:
+     chain: INPUT
+     ip_version: "{{ item }}"
+     destination_port: "22"
+     protocol: tcp
+     ctstate: NEW,ESTABLISHED
+     action: append
+     jump: ACCEPT
+   loop:
+     - ipv4
+     - ipv6
+
+ - name: Allow input Port for tcp connections ESTABLISHED RELATED from outside
+   iptables:
+     chain: INPUT
+     ip_version: "{{ item }}"
+     ctstate: ESTABLISHED,RELATED
+     action: append
+     jump: ACCEPT
+   loop:
+     - ipv4
+     - ipv6
+
+ - name: Allow input port for Factorio UDP default port
+   iptables:
+     chain: INPUT
+     destination_port: "34197"
+     protocol: udp
+     action: append
+     jump: ACCEPT
+
+ - name: Set the policy for the INPUT chain to DROP
+   iptables:
+     chain: INPUT
+     ip_version: "{{ item }}"
+     policy: DROP
+   loop:
+     - ipv4
+     - ipv6
+
+ - name: Set policy OUTPUT for ipv6 to DROP
+   iptables:
+     chain: OUTPUT
+     ip_version: ipv6
+     policy: DROP
+
+ - name: Set policy FORWARD for ipv6 to DROP
+   iptables:
+     chain: FORWARD
+     ip_version: ipv6
+     policy: DROP
+
+ - name: Save current iptables configuration for ipv4
+   community.general.iptables_state:
+     state: saved
+     ip_version: ipv4
+     path: '/etc/iptables/rules.v4'
+
+ - name: Save current iptables configuration for ipv6
+   community.general.iptables_state:
+     state: saved
+     ip_version: ipv6
+     path: '/etc/iptables/rules.v6'

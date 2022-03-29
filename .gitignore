@@ -1,0 +1,7 @@
+terraform/cloud.tf
+terraform/*.tfstate*
+terraform/.terraform
+terraform/.terraform.lock.hcl
+
+ansible/production.yml
+configuration.yml

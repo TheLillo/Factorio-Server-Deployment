@@ -1,0 +1,70 @@
+---
+ - name: Include Variables
+   include_vars:
+     file: ../configuration.yml
+     name: config
+
+ - name: Download Factorio Headless Server
+   ansible.builtin.get_url:
+     url: 'https://factorio.com/get-download/stable/headless/linux64'
+     dest: '/opt/factorio_headless_linux64.tar.xz'
+     mode: '0440'
+
+ - name: Wait until the factorio archive is present before continuing
+   wait_for:
+    path: '/opt/factorio_headless_linux64.tar.xz'
+
+ - name: Extract Factorio Headless Server Archive
+   ansible.builtin.unarchive:
+     src: '/opt/factorio_headless_linux64.tar.xz'
+     dest: '/opt'
+     remote_src: yes
+
+ - name: Create saves folder
+   ansible.builtin.file:
+     path: '/opt/factorio/saves'
+     state: directory
+     mode: '0755'
+
+ - name: Ensure group factorio exists
+   ansible.builtin.group:
+     name: 'factorio'
+     state: present
+
+ - name: Create Factorio user
+   ansible.builtin.user:
+     name: factorio
+     group: factorio
+
+ - name: Copy save file if is present in local
+   ansible.builtin.copy:
+     src: 'files/{{ config.ansible.factorio_save }}'
+     dest: '/opt/factorio/saves/'
+     mode: '0644'
+   ignore_errors: true
+
+ - name: Copy Server Settings JSON
+   ansible.builtin.copy:
+     src: 'files/server-settings.json'
+     dest: 'opt/factorio/saves/'
+     mode: '0600'
+
+ - name: Change owner of factorio folder
+   ansible.builtin.file:
+     path: /opt/factorio
+     state: directory
+     recurse: yes
+     owner: factorio
+     group: factorio
+
+ - name: Deploy Systemd Factorio unit
+   ansible.builtin.template:
+     src: templates/factorio.service.j2
+     dest: /etc/systemd/system/factorio.service
+     mode: '0644'
+   notify: start Factorio
+
+ - name: Create save if not exist
+   ansible.builtin.command: '/opt/factorio/bin/x64/factorio --create /opt/factorio/saves/{{ config.ansible.factorio_save }}'
+   args:
+     creates: '/opt/factorio/saves/{{ config.ansible.factorio_save  }}'
