@@ -3,7 +3,7 @@
 set -o nounset                              # Treat unset variables as an error
 
 summon_terraform(){
-    git_url_keys=$(grep git_ssh_keys configuration.yml | awk '{ print $2 }' | tr -d '"') 
+    git_url_keys=$(grep 'git_ssh_keys' configuration.yml | awk '{ print $2 }' | tr -d '"')
 
     cd terraform/
 
@@ -27,6 +27,10 @@ summon_terraform(){
 
 summon_ansible() {
   machine_ip=$(cd terraform && ./scripts/terraform_ip_list.sh && cd ..)
+
+  factorio_save=$(grep 'factorio_save:' configuration.yml | awk -F'factorio_save: ' '{ print $2 }')
+
+  cp "$factorio_save" ansible/roles/factorio/files/$(basename "$factorio_save")
 
   cd ansible/
 
